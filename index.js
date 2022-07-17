@@ -6,7 +6,7 @@ app.listen(8080, function () {
 })
 app.get('/home', function (req, res) {
     console.log('i');
-    res.render('index', {
-        num: 5
+    res.render('index', { 
+        nums: [3, 4, 5]
     })
 })
