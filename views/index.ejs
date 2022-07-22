@@ -2,14 +2,33 @@
 
 <head>
     <link rel="stylesheet" href="index.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
-<h1>Hello</h1>
-<p class="index">OK</p>
+<h1>Home</h1>
+<h2>Products</h2>
+<!-- Add list of products here -->
+<ul>
+    <% for(let i=0; i < products.length; i++) { %>
+        <li><%= products[i].name%></li>
+    <% } %>
+</ul>
 
 
-<% nums.forEach(element=> { %>
-    <p>
-        <%= element %>
-    </p>
-    <% }); %>
+
+<h2>Add a product</h2>
+<form action="/add-to-db" method="post">
+    <div class="mb-3">
+      <label for="productName" class="form-label">Name</label>
+      <input type="text" class="form-control" name="productName" id="productName">
+    </div>
+    <div class="mb-3">
+      <label for="productPrice" class="form-label">Price</label>
+      <input type="number" class="form-control" id="productPrice" name="productPrice">
+    </div>
+    <div class="mb-3">
+        <label for="productDescription" class="form-label">Description</label>
+        <input type="text" class="form-control" name="productDescription" id="productDescription" name="productDescription">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>

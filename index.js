@@ -1,9 +1,17 @@
 const express = require('express')
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const Product = require('./models/product.js')
-const app = express()
-const DB_URL = "mongodb+srv://maxretailwebsite:a895UeAC85O6bdVt@cluster0.wjnl7hj.mongodb.net/?retryWrites=true&w=majority"
-mongoose.connect(DB_URL, { useNewUrlParser: true })
+require('dotenv').config({path: __dirname + '/.env'})
+
+const app = express();
+
+app.use(express.static('public'))
+app.use(express.urlencoded({ extended: true, limit: "30mb" }));
+app.use(express.json({ limit: "30mb" }));
+app.set('view engine', 'ejs')
+
+// connect to DB
+mongoose.connect(process.env.DB_URL, { useNewUrlParser: true })
     .then(() => {
         console.log("Connection to database was successful");
     })
@@ -11,27 +19,28 @@ mongoose.connect(DB_URL, { useNewUrlParser: true })
         console.log("An error occured connecting to database")
         console.log(error)
     })
-app.set('view engine', 'ejs')
+
+// start app on port 8080
 app.listen(8080, function () {
     console.log('Application Started')
 })
-app.get('/home', function (req, res) {
-    console.log('i');
+
+app.get('/home', async function (req, res) {
+    const products = await Product.find({})
     res.render('index', {
-        nums: [3, 4, 5]
+        products
     })
 })
-app.use(express.static('public'))
-app.use(express.urlencoded({ extended: true, limit: "30mb" }));
-app.use(express.json({ limit: "30mb" }));
-app.get('/add-to-db', function (req, res) {
-    var product1 = new Product({
-        name: 'Winter on the water',
-        price: 79.99,
-        description: 'Imagine you are floating on a sea of wonder and drinking in the wine of luxury. Now, dont.'
-    });
-    product1.save(function (err, p) {
-        console.log(p.name + " saved.")
-    });
-    res.redirect('/home')
+
+app.post('/add-to-db', function (req, res) {
+
+    const product1 = new Product({
+        name: req.body.productName,
+        price: req.body.productPrice,
+        description: req.body.productDescription
+    })
+
+    Product.create(product1);
+
+    res.redirect('/home');
 })
